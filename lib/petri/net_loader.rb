@@ -52,15 +52,15 @@ module Petri
     # @param to_guid [String]
     # @param type [String]
     # @param production_rule [String, nil]
-    def add_arc(guid: nil, from_guid: , to_guid: , type: , production_rule: nil, guard: nil)
+    def add_arc(guid: nil, from_guid: , to_guid: , type: , production_rule: nil, guard: nil, timer_rule: nil)
       from_node = node_by_guid(from_guid)
       to_node = node_by_guid(to_guid)
 
       if type == 'test'
-        @arcs << Arc.new(self, from: from_node, to: to_node, type: :regular, guid: guid, guard: guard)
+        @arcs << Arc.new(self, from: from_node, to: to_node, type: :regular, guid: guid, guard: guard, timer_rule: timer_rule)
         @arcs << Arc.new(self, from: to_node, to: from_node, type: :regular, guid: guid)
       else
-        @arcs << Arc.new(self, from: from_node, to: to_node, type: type.try(:to_sym), guid: guid, production_rule: production_rule, guard: guard)
+        @arcs << Arc.new(self, from: from_node, to: to_node, type: type.try(:to_sym), guid: guid, production_rule: production_rule, guard: guard, timer_rule: timer_rule)
       end
     end
 
@@ -91,7 +91,8 @@ module Petri
         add_arc(from_guid: arc['from_guid'],
                 to_guid: transition.guid,
                 type: front_arc_type,
-                guard: arc['guard'])
+                guard: arc['guard'],
+                timer_rule: arc['timer_rule'])
 
         add_arc(from_guid: transition.guid,
                 to_guid: arc['from_guid'],
@@ -156,6 +157,7 @@ module Petri
                         to_guid: data['to_guid'],
                         type: data['type'],
                         production_rule: data['production_rule'],
+                        timer_rule: data['timer_rule'],
                         guard: data['guard'])
           end
         end

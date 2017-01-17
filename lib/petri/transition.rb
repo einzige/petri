@@ -37,6 +37,14 @@ module Petri
       ingoing_arcs.select { |arc| arc.guard.present? }
     end
 
+    def timer_arc
+      input_arcs.find { |arc| arc.timer_rule.present? }
+    end
+
+    def timer_rule
+      timer_arc.try!(:timer_rule)
+    end
+
     def inspect
       "Petri::Transition<#{identifier}>"
     end
