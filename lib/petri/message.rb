@@ -1,31 +1,40 @@
+# frozen_string_literal: true
 module Petri
   class Message < Transition
+    element_attribute :type, :message_identifier
 
-    # @return [String, nil]
-    def action
-      nil
+    # @param net [Net]
+    # @param data [Hash<Symbol>]
+    def initialize(net, data = {})
+      super
+      @data[:identifier] ||= generate_identifier
+    end
+
+    def receiver?
+      type == :receiver
+    end
+
+    def sender?
+      type == :sender
     end
 
     def automated?
       true
     end
 
-    def input_places
-      input_nodes
+    def inspect
+      "Petri::Message<#{identifier}>"
     end
 
-    def output_places
-      output_nodes
-    end
+    private
 
-    # @return [Array<Place>]
-    def places_to_reset
-      reset_arcs.map(&:to_node)
-    end
-
-    # @return [Array<Arc>]
-    def reset_arcs
-      net.arcs.select { |arc| arc.from_node == self && arc.reset? }
+    def generate_identifier
+      case type&.to_sym
+      when :sender then "SEND '#{message_identifier}'"
+      when :receiver then "RECEIVE '#{message_identifier}'"
+      else
+        raise ArgumentError, "No such message type '#{type.inspect}'"
+      end
     end
   end
 end

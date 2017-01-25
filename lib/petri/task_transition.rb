@@ -1,8 +1,9 @@
+# frozen_string_literal: true
 module Petri
   class TaskTransition < Transition
     include Petri::Subprocess
 
-    attr_reader :task_identifier
+    element_attribute :task_identifier, :pin
 
     # @param net [Net]
     # @param data [Hash<Symbol>]
@@ -32,28 +33,26 @@ module Petri
       pin == 'Cancel'
     end
 
-    def pin
-      @data[:pin]
+    def task_identifiers
+      task_identifier.present? ? task_identifier.split(/,\W*/) : []
     end
 
     # [Petri::Subprocess]
-    def subprocess_identifier
-      task_identifier
-    end
+    alias subprocess_identifier task_identifier
 
     private
 
     def generate_identifier
       if create?
-        "Create \"#{@task_identifier}\" task"
+        "Create \"#{task_identifier}\" task"
       elsif finish?
-        "Finish \"#{@task_identifier}\" task"
+        "Finish \"#{task_identifier}\" task"
       elsif pause?
-        "Pause \"#{@task_identifier}\" task"
+        "Pause \"#{task_identifier}\" task"
       elsif resume?
-        "Resume \"#{@task_identifier}\" task"
+        "Resume \"#{task_identifier}\" task"
       elsif cancel?
-        "Cancel \"#{@task_identifier}\" task"
+        "Cancel \"#{task_identifier}\" task"
       end
     end
   end

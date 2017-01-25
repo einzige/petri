@@ -1,25 +1,19 @@
+# frozen_string_literal: true
 module Petri
   class Transition < Node
+    element_attribute :automated
 
-    # @return [String, nil]
-    def action
-      @data[:action].presence
+    alias automated? automated
+    alias input_places input_nodes
+    alias output_places output_nodes
+
+    def manual?
+      !automated?
     end
 
-    def automated?
-      @data[:automated].present?
-    end
-
+    # @return [Array<Place>]
     def inhibitor_places
       ingoing_arcs.select(&:inhibitor?).map(&:from_node)
-    end
-
-    def input_places
-      input_nodes
-    end
-
-    def output_places
-      output_nodes
     end
 
     # @return [Array<Place>]
@@ -37,14 +31,18 @@ module Petri
       ingoing_arcs.select { |arc| arc.guard.present? }
     end
 
+    # @return [Arc, nil]
     def timer_arc
       input_arcs.find { |arc| arc.timer_rule.present? }
     end
 
+    # @return [String, nil]
+    # rubocop:disable Rails/Delegate
     def timer_rule
-      timer_arc.try!(:timer_rule)
+      timer_arc&.timer_rule
     end
 
+    # @return [String]
     def inspect
       "Petri::Transition<#{identifier}>"
     end

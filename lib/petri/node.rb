@@ -1,9 +1,14 @@
+# frozen_string_literal: true
 module Petri
   class Node < Element
+    attr_reader :guid
+    element_attribute :identifier
 
-    # @return [String, nil]
-    def identifier
-      @data[:identifier]
+    # @param net [Net]
+    # @param data [Hash<Symbol>]
+    def initialize(net, **data)
+      super
+      @guid ||= (data[:guid] ||= generate_guid)
     end
 
     # @return [Array<Arc>]
@@ -27,13 +32,19 @@ module Petri
     end
 
     # @return [Array<Arc>]
+    def ingoing_arcs
+      net.arcs.select { |arc| arc.to_node == self }
+    end
+
+    # @return [Array<Arc>]
     def outgoing_arcs
       net.arcs.select { |arc| arc.from_node == self }
     end
 
-    # @return [Array<Arc>]
-    def ingoing_arcs
-      net.arcs.select { |arc| arc.to_node == self }
+    private
+
+    def generate_guid
+      SecureRandom.uuid
     end
   end
 end
