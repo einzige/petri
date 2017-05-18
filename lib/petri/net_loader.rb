@@ -1,3 +1,7 @@
+require 'json'
+require 'active_support/core_ext/hash/keys'
+require 'active_support/core_ext/object/try'
+
 module Petri
   module NetLoader
     # @param val [String, Class]

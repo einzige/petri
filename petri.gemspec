@@ -18,5 +18,7 @@ Gem::Specification.new do |s|
 
   s.description = %q{A petri nets framework}
   s.summary = %q{Moves tokens around}
+
+  s.add_dependency 'activesupport', '>= 4.2.0'
 end
 

@@ -1,0 +1,27 @@
+{
+  "places": [
+    {
+      "identifier": 1,
+      "start": "foo",
+      "end": "bar"
+    }
+  ],
+  "transitions": [
+    {
+      "identifier": 2,
+      "automated": true,
+      "action": "go"
+    }
+  ],
+  "messages": [
+
+  ],
+  "tasks": [
+
+  ],
+  "arcs": [
+    {
+      "type": "regular"
+    }
+  ]
+}
